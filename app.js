@@ -14,8 +14,6 @@ client.once('ready', () => {
     console.log('Ready!');
     general = client.channels.get('668906184727592997');
     testing = client.channels.get('676881914988068864');
-    for (let name of names)
-        getTRNRecent('origin', name)
 });
 
 client.on('message', async message => {
@@ -23,6 +21,11 @@ client.on('message', async message => {
     const args = message.content.slice(1).split(' ');
     if (args[0] === 'stats')
         message.reply(await getTRNStats('origin', args[1]));
+    else if (args[0] === 'ping') {
+        const user = message.mentions.users.first();
+        message.reply(`you really want to talk to ${user}`);
+    } else
+        message.reply("bud, that isn't a recognized command...");
 });
 
 const getTRNRecent = async (plat, id) => {
@@ -31,7 +34,7 @@ const getTRNRecent = async (plat, id) => {
         headers: { 'TRN-Api-Key': TRNKEY }
     });
     const json = await res.json();
-    const { metadata: { endDate, character, characterIconUrl, legendBigImageUrl }, stats: { level, kills, rankScore } } = json.data.items[0].matches[0]
+    const { metadata: { endDate, character, characterIconUrl }, stats: { level, kills, rankScore } } = json.data.items[0].matches[0]
 
     const exampleEmbed = new Discord.RichEmbed()
         .setColor('#0099ff')
@@ -74,7 +77,7 @@ const getTRNStats = async (plat, id) => {
 client.login(TOKEN);
 
 module.exports = {
-    stat: getTRNStats, 
+    stat: getTRNStats,
     rec: () => {
         for (let name of names)
             getTRNRecent('origin', name)
