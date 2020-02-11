@@ -72,3 +72,11 @@ const getTRNStats = async (plat, id) => {
 }
 
 client.login(TOKEN);
+
+module.exports = {
+    stat: getTRNStats, 
+    rec: () => {
+        for (let name of names)
+            getTRNRecent('origin', name)
+    }
+}
