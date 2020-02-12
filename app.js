@@ -77,7 +77,7 @@ const getTRNStats = async (plat, id) => {
 }
 
 const rec = () => {
-    gameRecords.send(`This is the current record for ${new Date().toLocaleString()}`)
+    gameRecords.send(`This is the current record for ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })}`)
     for (let name of names)
         getTRNRecent('origin', name)
 }
