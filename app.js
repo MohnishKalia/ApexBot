@@ -12,6 +12,7 @@ let general, testing, gameRecords;
 
 client.once('ready', () => {
     console.log('Ready!');
+    client.user.setActivity('all of you 😈', { type: "LISTENING" })
     general = client.channels.get('668906184727592997');
     testing = client.channels.get('676881914988068864');
     gameRecords = client.channels.get('676941675125276703');
@@ -75,13 +76,23 @@ const getTRNStats = async (plat, id) => {
     return exampleEmbed;
 }
 
+const rec = () => {
+    gameRecords.send(`This is the current record for ${new Date().toLocaleString()}`)
+    for (let name of names)
+        getTRNRecent('origin', name)
+}
+
 client.login(TOKEN);
+
+// wait 10 seconds then start record loop
+setTimeout(
+    (function record() {
+        rec();
+        setTimeout(record, 1000 * 60 * 60);
+    })
+    , 10000);
 
 module.exports = {
     stat: getTRNStats,
-    rec: () => {
-        gameRecords.send(`This is the current record for ${new Date().toLocaleString()}`)
-        for (let name of names)
-            getTRNRecent('origin', name)
-    }
+    rec
 }
