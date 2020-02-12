@@ -8,12 +8,13 @@ const trnEP = "https://public-api.tracker.gg/v2/apex/standard/profile";
 
 const names = ['DarkBicreeper', 'theStav19', 'Dur3nda1']
 
-let general, testing;
+let general, testing, gameRecords;
 
 client.once('ready', () => {
     console.log('Ready!');
     general = client.channels.get('668906184727592997');
     testing = client.channels.get('676881914988068864');
+    gameRecords = client.channels.get('676941675125276703');
 });
 
 client.on('message', async message => {
@@ -47,7 +48,7 @@ const getTRNRecent = async (plat, id) => {
         .addField('New Rank Score', rankScore.displayValue, true)
         .setTimestamp(new Date(endDate.value))
 
-    testing.send(exampleEmbed);
+    gameRecords.send(exampleEmbed);
 }
 
 const getTRNStats = async (plat, id) => {
@@ -79,6 +80,7 @@ client.login(TOKEN);
 module.exports = {
     stat: getTRNStats,
     rec: () => {
+        gameRecords.send(`This is the current record for ${new Date().toLocaleString()}`)
         for (let name of names)
             getTRNRecent('origin', name)
     }
