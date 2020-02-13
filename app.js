@@ -21,13 +21,33 @@ client.once('ready', () => {
 client.on('message', async message => {
     if (!message.content.startsWith('!') || message.author.bot) return;
     const args = message.content.slice(1).split(' ');
-    if (args[0] === 'stats')
-        message.reply(await getTRNStats('origin', args[1]));
-    else if (args[0] === 'ping') {
-        const user = message.mentions.users.first();
-        message.reply(`you really want to talk to ${user}`);
-    } else
-        message.reply("bud, that isn't a recognized command...");
+    switch (args[0]) {
+        case 'help':
+            const helpEmbed = new Discord.RichEmbed()
+                .setColor('#0099ff')
+                .setTitle('Help Needed?')
+                .setAuthor(client.user.username)
+                .setDescription('Here are the available commands ---')
+                .addField('!stats', 'Fetches a service record from tracker.gg')
+                .addField('!ping', 'Mentions another user on the server')
+                .addField('!repo','Replies with a link to the ApexBot repo')
+                .setFooter('Game records will automatically generate on an hourly basis')
+            message.reply(helpEmbed);
+            break;
+        case 'stats':
+            message.reply(await getTRNStats('origin', args[1]));
+            break;
+        case 'ping':
+            const user = message.mentions.users.first();
+            message.reply(`you really want to talk to ${user}`);
+            break;
+        case 'repo':
+            message.reply('https://github.com/MohnishKalia/ApexBot');
+            break;
+        default:
+            message.reply("bud, that isn't a recognized command...");
+            break;
+    }
 });
 
 const getTRNRecent = async (plat, id) => {
@@ -38,7 +58,7 @@ const getTRNRecent = async (plat, id) => {
     const json = await res.json();
     const { metadata: { endDate, character, characterIconUrl }, stats: { level, kills, rankScore } } = json.data.items[0].matches[0]
 
-    const exampleEmbed = new Discord.RichEmbed()
+    const recentEmbed = new Discord.RichEmbed()
         .setColor('#0099ff')
         .setTitle(id)
         .setAuthor(character.displayValue)
@@ -49,7 +69,7 @@ const getTRNRecent = async (plat, id) => {
         .addField('New Rank Score', rankScore.displayValue, true)
         .setTimestamp(new Date(endDate.value))
 
-    gameRecords.send(exampleEmbed);
+    gameRecords.send(recentEmbed);
 }
 
 const getTRNStats = async (plat, id) => {
@@ -62,7 +82,7 @@ const getTRNStats = async (plat, id) => {
     const { level, kills } = json.data.segments[0].stats;
     const { name, imageUrl, bgImageUrl } = json.data.segments[1].metadata;
 
-    const exampleEmbed = new Discord.RichEmbed()
+    const statsEmbed = new Discord.RichEmbed()
         .setColor('#0099ff')
         .setTitle(id)
         .setAuthor(name)
@@ -73,7 +93,7 @@ const getTRNStats = async (plat, id) => {
         .setImage(bgImageUrl)
         .setTimestamp()
 
-    return exampleEmbed;
+    return statsEmbed;
 }
 
 const rec = () => {
